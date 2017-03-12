@@ -2,6 +2,7 @@ import nomnom from 'nomnom';
 import Path from 'path';
 import fs from 'fs';
 import { name, version } from '../package.json';
+import defaults from './defaults';
 
 const exists = path => fs.accessSync(absolutePath(path));
 const absolutePath = path => Path.isAbsolute(path) ? path : Path.resolve(process.cwd(), path);
@@ -9,24 +10,24 @@ const absolutePath = path => Path.isAbsolute(path) ? path : Path.resolve(process
 const options = {
   hostname: {
     abbr: 'n',
-    default: 'localhost'
+    default: defaults.hostname,
   },
   source: {
     abbr: 's',
-    default: 9001
+    default: defaults.source,
   },
   target: {
     abbr: 't',
-    default: 9000
+    default: defaults.target,
   },
   cert: {
     abbr: 'c',
-    default: Path.resolve(__dirname, '..', 'resources', 'localhost.cert'),
+    default: defaults.cert,
     callback: exists
   },
   key: {
     abbr: 'k',
-    default: Path.resolve(__dirname, '..', 'resources', 'localhost.key'),
+    default: defaults.key,
     callback: exists
   },
   config: {
