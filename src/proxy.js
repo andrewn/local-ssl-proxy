@@ -1,0 +1,33 @@
+var fs = require("fs");
+var proxy = require("http-proxy");
+var chalk = require("chalk");
+
+const createProxy = (config, args) => {
+ Object.keys(config).forEach(function(name) {
+    var options = config[name];
+    var hostname = options.hostname || args.hostname;
+    var target = options.target || args.target;
+    var key = options.key || args.key;
+    var cert = options.cert || args.cert;
+    var source = options.source || args.source;
+
+    proxy.createServer({
+      xfwd: true,
+      ws: true,
+      target: {
+        host: hostname,
+        port: target
+      },
+      ssl: {
+        key: fs.readFileSync(key, "utf8"),
+        cert: fs.readFileSync(cert, "utf8")
+      }
+    }).on("error", function(e) {
+      console.error(chalk.red("Request failed to " + name + ": " + chalk.bold(e.code)));
+    }).listen(source);
+
+    console.log(chalk.green("Started " + chalk.bold(name) + ": https://" + hostname + ":" + source, "→ http://" + hostname + ":" + target));
+  });
+};
+
+export default createProxy;
